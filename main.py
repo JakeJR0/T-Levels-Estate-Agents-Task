@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt
 
 estate_data = pd.read_csv("EstateAgents.csv")
 
-def get_graph_axis():
+def get_graph_axis(return_as_frame=False):
     # Creates the graph_data variable that
     # orgainises the amount of times
     # a value is uses within a column.
@@ -25,14 +25,27 @@ def get_graph_axis():
     # order.
     
     graph_data = estate_data["County"].value_counts()
+    if return_as_frame:
+        frame = pd.DataFrame({
+            "County": [], "Visits": []})
     x_axis, y_axis = [], []
     
     for i in graph_data:
         y_axis.append(i)
+        if return_as_frame:
+            frame.loc[len(frame), "Visits"] = i
+            
+    county_id = 0
     for i in graph_data.index:
         x_axis.append(i)
+        if return_as_frame:
+            frame.loc[county_id, "County"] = i
+            county_id += 1
     
-    return x_axis, y_axis
+    if return_as_frame:
+        return frame    
+    else:
+        return x_axis, y_axis
 
 while True:
     try:
@@ -60,7 +73,7 @@ while True:
         
         if user_choice == 1:
 
-            county,visits = get_graph_axis()
+            frame = get_graph_axis(True)
             
             # Displays information about what the
             # program is about to display.
@@ -70,10 +83,8 @@ while True:
             # Displays the count variable 
             # which will show the popularity
             # of each county.
-            print()
-            for i in county:
-                print(f"{i}")
-            print()
+            
+            print(frame)
             
         elif user_choice == 2:
             while True:
@@ -90,7 +101,7 @@ while True:
                     graph_choice = graph_choice + "\nOption 3: Pie Chart"
                     graph_choice = graph_choice + "\nOption 4: Exit Menu" 
                     
-                    
+                    graph_title = "Destination Popularity of Counties by Visits"
                     
                     
                     print(graph_choice)
@@ -110,7 +121,7 @@ while True:
                         
                         # Sets the graph title.
                         
-                        plt.title("Popularity Bar Chart")
+                        plt.title(graph_title)
                         
                         # Sets the angle of the
                         # x axis labels.
@@ -143,7 +154,7 @@ while True:
                         
                         # Sets the graph title.
                         
-                        plt.title("Popularity Scatter Graph")
+                        plt.title(graph_title)
                         
                         # Sets the angle of the
                         # x axis labels.
@@ -176,7 +187,7 @@ while True:
                         
                         # Sets the graph title.
                         
-                        plt.title("Popularity Pie Chart")
+                        plt.title(graph_title)
                         
                         # Sets the angle of the
                         # x axis labels.
